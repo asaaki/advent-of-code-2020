@@ -1,17 +1,18 @@
-use structopt::StructOpt;
-use std::convert::TryFrom;
-use std::fs::File;
-use std::io::BufRead;
-use std::io::BufReader;
-
 mod days;
 mod structs;
 mod utils;
 
+use aoc_macros::day_branch;
 use structs::*;
 use utils::*;
 
 fn main() -> NullResult {
+    use std::convert::TryFrom;
+    use std::fs::File;
+    use std::io::BufRead;
+    use std::io::BufReader;
+    use structopt::StructOpt;
+
     let args = Cli::from_args();
 
     let is_test = args.test.is_some();
@@ -39,14 +40,8 @@ fn main() -> NullResult {
 
 fn run_day(day: Day, step: Step, data: Vec<String>, expected: Option<String>) -> NullResult {
     match day {
-        Day::One => {
-            if let Some(expected_value) = expected {
-                days::day1::run_test(step, data, expected_value)?;
-            } else {
-                days::day1::run(step, data)?;
-            }
-        }
+        Day::One => day_branch!(day1, step, data, expected),
+        Day::Two => day_branch!(day2, step, data, expected),
     }
-
-    Ok(())
+    // Ok(())
 }

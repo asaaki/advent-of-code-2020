@@ -1,4 +1,3 @@
-
 // Q&D way of catching all errors without worrying about their types at compile time
 // @see https://doc.rust-lang.org/stable/rust-by-example/error/multiple_error_types/boxing_errors.html
 pub(crate) type GenericResult<T> = std::result::Result<T, Box<dyn std::error::Error>>;
