@@ -13,7 +13,8 @@ pub(crate) struct Cli {
 #[repr(u8)]
 pub(crate) enum Day {
     One = 1,
-    Two = 2,
+    Two,
+    Three
 }
 
 #[derive(Debug, Eq, PartialEq, TryFromPrimitive)]

@@ -42,6 +42,7 @@ fn run_day(day: Day, step: Step, data: Vec<String>, expected: Option<String>) ->
     match day {
         Day::One => day_branch!(day1, step, data, expected),
         Day::Two => day_branch!(day2, step, data, expected),
+        Day::Three => day_branch!(day3, step, data, expected),
     }
     // Ok(())
 }
