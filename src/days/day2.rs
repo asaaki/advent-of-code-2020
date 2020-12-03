@@ -37,10 +37,10 @@ pub(crate) fn run(step: Step, input: Vec<String>) -> CustomResult<String> {
         Step::One => {
             let valid_passwords: Vec<bool> = database.iter().map(|(policy, pw)| {
                 let has_letter = pw.contains(policy.letter);
-                if has_letter {
+                has_letter && {
                     let count = pw.chars().filter(|c| *c == policy.letter).count();
                     count <= policy.max && count >= policy.min
-                } else { false }
+                }
             }).filter(|e| *e).collect();
 
             let result: String = format!("{}", valid_passwords.len());
