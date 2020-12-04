@@ -9,6 +9,9 @@ pub(crate) fn run_test(step: Step, input: Vec<String>, expected: String) -> Null
     assert_eq!(actual, expected);
     Ok(())
 }
+
+// there's probably a crate out there where we could add fancy field validations directly;
+// I should search for one just for testing it
 #[derive(Clone, Debug, Serialize, Deserialize)]
 struct Passport {
     byr: u16,
@@ -27,6 +30,7 @@ pub(crate) fn run(step: Step, input: Vec<String>) -> CustomResult<String> {
     // 1. separate on empty lines
     // 2. merge record data into one string
     // 3. reorganize record data to be valid YAML
+    // Sadly this requires some String allocations on the way. :cry:
     let records: Vec<String> = input
         .join("\n")
         .split("\n\n")
@@ -46,12 +50,11 @@ pub(crate) fn run(step: Step, input: Vec<String>) -> CustomResult<String> {
                 .join("\n")
         })
         .collect();
-    // println!("records = {:#?}", records);
-    let passports: Vec<Option<Passport>> = records
+
+        let passports: Vec<Option<Passport>> = records
         .iter()
         .map(|r| serde_yaml::from_str(r).ok())
         .collect();
-    // println!("passports = {:#?}", passports);
 
     match step {
         Step::One => {
@@ -78,8 +81,10 @@ pub(crate) fn run(step: Step, input: Vec<String>) -> CustomResult<String> {
     }
 }
 
+// no short circuits here yet, could be improved;
+// if so, then reorder checks based on performance, so REs last
 fn step2_validate(p: &Passport) -> bool {
-    // println!("passport={:?}", p);
+    // could be its own function, but it was one of the easier checks
     let valid_years =
            p.byr >= 1920
         && p.byr <= 2002
@@ -98,11 +103,13 @@ fn step2_validate(p: &Passport) -> bool {
 static RE_HEIGHT: Lazy<Regex> =
     Lazy::new(|| Regex::new(r"^((?P<cm>\d{3})cm|(?P<in>\d{2})in)$").unwrap());
 
+// there is probably a nicer way to handle this,
+// but I also kinda like this 2 phase approach,
+// just not very FP :shrug:
 fn validate_height(input: &str) -> bool {
     let mut valid_height = false;
 
     if let Some(caps) = RE_HEIGHT.captures(input) {
-        // println!("caps = {:?}", caps);
         if let Some(m) = caps.name("cm") {
             let v: u8 = m.as_str().parse().expect("`cm` to be a number");
             valid_height = (v >= 150) && (v <= 193)
@@ -118,11 +125,11 @@ fn validate_height(input: &str) -> bool {
 
 static RE_HEX: Lazy<Regex> = Lazy::new(|| Regex::new(r"^#[0-9a-f]{6}$").unwrap());
 
+// why this extra length check?
+// so we can bail out early and avoid running REs if the exact length requirement is not met anyway
 fn validate_hex(input: &str) -> bool {
     input.len() == 7 && RE_HEX.find(input).is_some()
 }
-
-// static RE_HEX: Lazy<Regex> = Lazy::new(|| Regex::new(r"^#[0-9a-f]{6}$").unwrap());
 
 const EYE_COLORS: [&str; 7] = ["amb", "blu", "brn", "gry", "grn", "hzl", "oth"];
 
@@ -132,6 +139,7 @@ fn validate_eye_color(input: &str) -> bool {
 
 static RE_PID: Lazy<Regex> = Lazy::new(|| Regex::new(r"^[0-9]{9}$").unwrap());
 
+// see above (validate_hex)
 fn validate_pid(input: &str) -> bool {
     input.len() == 9 && RE_PID.find(input).is_some()
 }
