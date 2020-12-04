@@ -2,12 +2,10 @@ RUN     = cargo run
 RUN_FOR = $(RUN) --
 QUIET   = 2>/dev/null
 piece   = $(word $2,$(subst ., ,$1))
-TASKS   = 1.1 \
-          1.2 \
-					2.1 \
-					2.2 \
-					3.1 \
-					3.2
+TASKS   = 1.1 1.2 \
+					2.1 2.2 \
+					3.1 3.2 \
+					4.1 4.2
 
 default: $(TASKS)
 
