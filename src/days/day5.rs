@@ -8,11 +8,9 @@ pub(crate) fn run_test(step: Step, input: Vec<String>, expected: String) -> Null
 }
 
 pub(crate) fn run(step: Step, input: Vec<String>) -> CustomResult<String> {
-    let mut seat_ids: Vec<u16> = input
-        .iter()
-        .map(|code| parse_code2(code))
-        .collect();
-    seat_ids.sort();
+    let mut seat_ids: Vec<u16> = input.iter().map(|code| parse_code(code)).collect();
+    // we can use (faster) unstable sorting, because we have only unique IDs
+    seat_ids.sort_unstable();
 
     match step {
         Step::One => {
@@ -45,13 +43,13 @@ pub(crate) fn run(step: Step, input: Vec<String>) -> CustomResult<String> {
 }
 
 // We only need the high (1) bits
-const BIT_MARKERS: [char; 2] = ['B','R'];
+const BIT_MARKERS: [char; 2] = ['B', 'R'];
 
 /*
 Takes a string and uses the `high` marker to calculate a number,
 it is a bit pattern. High bits are marked with B and R.
 
-Example code: FBFBBFFRLR
+Example code: FBFBBFFRLR, ID: 357
 
               row col    complete
     CODE  FBFBBFF RLR  FBFBBFFRLR
@@ -66,7 +64,8 @@ Notes:
 - `as u16` is okay in our case, the requirements do not allow values bigger
   than 1023 (10 bits), so we can safely truncate the usizes in the end.
 */
-fn parse_code2(code: &str) -> u16 {
+#[inline]
+fn parse_code(code: &str) -> u16 {
     // TIL: this is how to use "slice of chars"; was tricky to figure out
     code.match_indices(&BIT_MARKERS[..])
         .map(|(pos, _)| (1 << ((code.len() - 1) - pos) as u16))
