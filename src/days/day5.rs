@@ -7,12 +7,11 @@ pub(crate) fn run_test(step: Step, input: Vec<String>, expected: String) -> Null
     Ok(())
 }
 
-// This struct mostly helps during debugging,
-// but also keeping score of the row was valuable for step 2
+// This struct mostly helps during debugging
 #[derive(Clone, Debug)]
 struct Seat<'c> {
     code: &'c str, // informational
-    row: u8,       // good for step 2 (filtering)
+    row: u8,       // informational
     col: u8,       // informational
     id: usize,     // required (could be also a u16)
 }
@@ -23,10 +22,12 @@ pub(crate) fn run(step: Step, input: Vec<String>) -> CustomResult<String> {
         .map(|code| {
             let (rcode, ccode) = code.split_at(7);
             // we only need the high (1) bit markers
+            // we could also have parsed the whole string as one and avoid the
+            // post-calculation of the ID, but hey, we gained extra info;
+            // also somehow difficult to parse based on more than a single char
+            // in an "either-or" fashion
             let row = parse_code(&rcode, 'B');
             let col = parse_code(&ccode, 'R');
-            // we could also have parsed the whole string as one and avoid the
-            // post-calculation of the ID, but hey, we gained extra info instead
             let id = (row as usize) * 8 + (col as usize);
 
             Seat { code, row, col, id }
@@ -43,22 +44,10 @@ pub(crate) fn run(step: Step, input: Vec<String>) -> CustomResult<String> {
             Ok(result)
         }
 
-        // To encourage to code the filtering instead of just guessing, the
-        // inputs will include a gap in the first and/or last row;
-        // sure, you could still try all results, but they also have a cooldown
-        // on the form.
         Step::Two => {
-            // so row tracking was a good idea ;-)
-            let (first, last) = (seats.first().unwrap().row, seats.last().unwrap().row);
-            let filtered: Vec<Seat> = seats
-                .iter()
-                .filter(|s| s.row > first && s.row < last)
-                .map(|s| s.clone())
-                .collect();
-
             // .windows(...) makes it so easy, otherwise we would have to either
             // use indices or .peek(), which would be less convenient to use.
-            let my_seat_id = filtered.windows(2).fold(0usize, |id, pairs| {
+            let my_seat_id = seats.windows(2).fold(0usize, |id, pairs| {
                 // gap check
                 if pairs[0].id + 2 == pairs[1].id {
                     // our result;
@@ -70,7 +59,7 @@ pub(crate) fn run(step: Step, input: Vec<String>) -> CustomResult<String> {
             });
 
             let result = format!("{}", my_seat_id);
-            println!("Inputs: seats={}", filtered.len());
+            println!("Inputs: seats={}", seats.len());
             println!("Result = {}", result);
             Ok(result)
         }
