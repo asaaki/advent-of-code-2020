@@ -6,13 +6,13 @@ use aoc_macros::day_branch;
 use structs::*;
 use utils::*;
 
-fn main() -> NullResult {
-    use std::convert::TryFrom;
-    use std::fs::File;
-    use std::io::BufRead;
-    use std::io::BufReader;
-    use structopt::StructOpt;
+use std::convert::TryFrom;
+use std::fs::File;
+use std::io::BufRead;
+use std::io::BufReader;
+use structopt::StructOpt;
 
+fn main() -> NullResult {
     let args = Cli::from_args();
 
     let is_test = args.test.is_some();
@@ -44,6 +44,6 @@ fn run_day(day: Day, step: Step, data: Vec<String>, expected: Option<String>) ->
         Day::Two => day_branch!(day2, step, data, expected),
         Day::Three => day_branch!(day3, step, data, expected),
         Day::Four => day_branch!(day4, step, data, expected),
+        Day::Five => day_branch!(day5, step, data, expected),
     }
-    // Ok(())
 }

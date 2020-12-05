@@ -51,7 +51,7 @@ pub(crate) fn run(step: Step, input: Vec<String>) -> CustomResult<String> {
         })
         .collect();
 
-        let passports: Vec<Option<Passport>> = records
+    let passports: Vec<Option<Passport>> = records
         .iter()
         .map(|r| serde_yaml::from_str(r).ok())
         .collect();
@@ -85,8 +85,7 @@ pub(crate) fn run(step: Step, input: Vec<String>) -> CustomResult<String> {
 // if so, then reorder checks based on performance, so REs last
 fn step2_validate(p: &Passport) -> bool {
     // could be its own function, but it was one of the easier checks
-    let valid_years =
-           p.byr >= 1920
+    let valid_years = p.byr >= 1920
         && p.byr <= 2002
         && p.iyr >= 2010
         && p.iyr <= 2020
