@@ -4,7 +4,7 @@ use once_cell::sync::Lazy;
 use regex::Regex;
 use serde::{Deserialize, Serialize};
 
-pub(crate) fn run_test(step: Step, input: Vec<String>, expected: String) -> NullResult {
+pub(crate) fn run_test(step: Step, input: &Vec<String>, expected: String) -> NullResult {
     let actual = run(step, input)?;
     assert_eq!(actual, expected);
     Ok(())
@@ -24,7 +24,7 @@ struct Passport {
     cid: Option<String>, // the only optional field!
 }
 
-pub(crate) fn run(step: Step, input: Vec<String>) -> CustomResult<String> {
+pub(crate) fn run(step: Step, input: &Vec<String>) -> CustomResult<String> {
     // clean up input data:
     // 0. re-glue vec of lines into one string blob
     // 1. separate on empty lines

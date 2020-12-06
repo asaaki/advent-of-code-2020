@@ -1,7 +1,7 @@
 use crate::structs::*;
 use crate::utils::*;
 
-pub(crate) fn run_test(step: Step, input: Vec<String>, expected: String) -> NullResult {
+pub(crate) fn run_test(step: Step, input: &Vec<String>, expected: String) -> NullResult {
     let actual = run(step, input)?;
     assert_eq!(actual, expected);
     Ok(())
@@ -14,7 +14,7 @@ struct Policy {
     letter: char,
 }
 
-pub(crate) fn run(step: Step, input: Vec<String>) -> CustomResult<String> {
+pub(crate) fn run(step: Step, input: &Vec<String>) -> CustomResult<String> {
     let database: Vec<(Policy, String)> = input
         .into_iter()
         .map(|e| {

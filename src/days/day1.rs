@@ -1,7 +1,7 @@
 use crate::structs::*;
 use crate::utils::*;
 
-pub(crate) fn run_test(step: Step, input: Vec<String>, expected: String) -> NullResult {
+pub(crate) fn run_test(step: Step, input: &Vec<String>, expected: String) -> NullResult {
     let actual = run(step, input)?;
     assert_eq!(actual, expected);
     Ok(())
@@ -9,7 +9,7 @@ pub(crate) fn run_test(step: Step, input: Vec<String>, expected: String) -> Null
 
 const ADD_RESULT: u64 = 2020;
 
-pub(crate) fn run(step: Step, input: Vec<String>) -> CustomResult<String> {
+pub(crate) fn run(step: Step, input: &Vec<String>) -> CustomResult<String> {
     let numbers: Vec<u64> = input
         .into_iter()
         .map(|e| e.parse::<u64>().unwrap())

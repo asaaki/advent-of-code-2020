@@ -1,7 +1,7 @@
 use crate::structs::*;
 use crate::utils::*;
 
-pub(crate) fn run_test(step: Step, input: Vec<String>, expected: String) -> NullResult {
+pub(crate) fn run_test(step: Step, input: &Vec<String>, expected: String) -> NullResult {
     let actual = run(step, input)?;
     assert_eq!(actual, expected);
     Ok(())
@@ -17,7 +17,7 @@ const STEPPINGS_2: [(usize, usize); 5] = [(1, 1), (3, 1), (5, 1), (7, 1), (1, 2)
 // used from task 2
 const MAX_R_STEP: usize = 7;
 
-pub(crate) fn run(step: Step, input: Vec<String>) -> CustomResult<String> {
+pub(crate) fn run(step: Step, input: &Vec<String>) -> CustomResult<String> {
     let height = input.len();
     let chunk_size = input[0].len();
     let lines_covered = chunk_size.div_euclid(MAX_R_STEP);

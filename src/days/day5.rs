@@ -1,13 +1,13 @@
 use crate::structs::*;
 use crate::utils::*;
 
-pub(crate) fn run_test(step: Step, input: Vec<String>, expected: String) -> NullResult {
+pub(crate) fn run_test(step: Step, input: &Vec<String>, expected: String) -> NullResult {
     let actual = run(step, input)?;
     assert_eq!(actual, expected);
     Ok(())
 }
 
-pub(crate) fn run(step: Step, input: Vec<String>) -> CustomResult<String> {
+pub(crate) fn run(step: Step, input: &Vec<String>) -> CustomResult<String> {
     let mut seat_ids: Vec<u16> = input.iter().map(|code| parse_code(code)).collect();
     // we can use (faster) unstable sorting, because we have only unique IDs
     seat_ids.sort_unstable();
