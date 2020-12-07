@@ -21,11 +21,12 @@ type ContainsSet = HashSet<String>;
 const MY_BAG: &str = "shiny gold";
 
 // find container bag and its children
-static RE_SOURCE: Lazy<Regex> = Lazy::new(||
-    Regex::new(r"^(?P<source>\w+ \w+) bags?? contain (?P<children>[^.]+)*\.$").unwrap());
+static RE_SOURCE: Lazy<Regex> = Lazy::new(|| {
+    Regex::new(r"^(?P<source>\w+ \w+) bags?? contain (?P<children>[^.]+)*\.$").unwrap()
+});
 // find each child color
-static RE_CHILDREN: Lazy<Regex> = Lazy::new(||
-    Regex::new(r"(?P<count>\d+) (?P<child>\w+ \w+) bags??").unwrap());
+static RE_CHILDREN: Lazy<Regex> =
+    Lazy::new(|| Regex::new(r"(?P<count>\d+) (?P<child>\w+ \w+) bags??").unwrap());
 
 pub(crate) fn run(step: Step, input: &Vec<String>) -> CustomResult<String> {
     let (contains, contained) = create_maps(input);
@@ -48,36 +49,54 @@ pub(crate) fn run(step: Step, input: &Vec<String>) -> CustomResult<String> {
     }
 }
 
+// this might not be the most efficient way of preprocessing, but it does the job
+// note: every time you see .to_owned() we create a new copy to be stored as a string;
+//       otherwise I would have to deal with lifetime mess across multiple maps … very messy.
 fn create_maps(input: &Vec<String>) -> (ContainsMap, ContainedMap) {
     let mut contains: ContainsMap = ContainsMap::new();
     let mut contained: ContainedMap = ContainedMap::new();
 
     for line in input {
         // we can skip empty container bags (REs are expensive enough already)
-        if line.ends_with("no other bags.") { continue; }
+        if line.ends_with("no other bags.") {
+            continue;
+        }
 
+        // deconstruct the line: step 1 - find the source (container)
         if let Some(caps) = RE_SOURCE.captures(line) {
-            let source = caps.name("source").unwrap().as_str();
+            if let Some(src_match) = caps.name("source") {
+                let source = src_match.as_str();
 
-            if let Some(children) = caps.name("children") {
-                for c in RE_CHILDREN.captures_iter(children.as_str()) {
-                    let count: usize = c.name("count").unwrap().as_str().parse().unwrap();
-                    let child = c.name("child").unwrap().as_str();
+                // step 2 - gather the children (containees)
+                if let Some(children) = caps.name("children") {
+                    // TIL: .captures() would not return all the results, so we have to iterate
+                    for c in RE_CHILDREN.captures_iter(children.as_str()) {
+                        // if that is too verbose, see what happens under the hood:
+                        let count: usize = c
+                            .name("count") // maybe match
+                            .expect("count match missing") // unwrap or fail
+                            .as_str() // turn match into string slice
+                            .parse() // try to make it an int
+                            .expect("count to be a number"); // unwrap or fail
+                        // shorter parsing as no type conversion is needed:
+                        let child = c.name("child").expect("child match missing").as_str();
 
-                    if contains.contains_key(source) {
-                        let mut values = contains.get(source).unwrap().to_owned();
-                        values.push((count, child.to_owned()));
-                        contains.insert(source.to_owned(), values);
-                    } else {
-                        contains.insert(source.to_owned(), vec![(count, child.to_owned())]);
+                        // poor man's create_or_update of keys;
+                        // there's probably a smarter way of doing it
+                        if let Some(src) = contains.get(source) {
+                            let mut values = src.to_owned();
+                            values.push((count, child.to_owned()));
+                            contains.insert(source.to_owned(), values);
+                        } else {
+                            contains.insert(source.to_owned(), vec![(count, child.to_owned())]);
+                        }
+
+                        let mut v = vec![source.to_owned()];
+                        if let Some(values) = contained.get(child) {
+                            v.append(&mut values.to_owned());
+                        }
+                        contained.insert(child.to_owned(), v);
                     }
-
-                    let mut v = vec![source.to_owned()];
-                    if contained.contains_key(child) {
-                        let mut v2 = contained.get(child).unwrap().to_owned();
-                        v.append(&mut v2);
-                    }
-                    contained.insert(child.to_owned(), v);
                 }
             }
         }
@@ -91,7 +110,7 @@ fn walk_contained(map: &ContainedMap, color: &str, out: &mut ContainsSet) {
         for c in containers {
             out.insert(c.to_owned());
             walk_contained(map, c, out)
-        };
+        }
     }
 }
 
