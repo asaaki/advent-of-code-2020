@@ -10,14 +10,20 @@ pub(crate) fn run_test(step: Step, input: &Vec<String>, expected: String) -> Nul
     Ok(())
 }
 
+// A contains (x amount of B)
 type ContainsMap = HashMap<String, Vec<(usize, String)>>;
+// A is contained in B
 type ContainedMap = HashMap<String, Vec<String>>;
+// counter helper
 type ContainsSet = HashSet<String>;
 
+// glowing, sparkling rainbow would have been preferred, but this will do, too
 const MY_BAG: &str = "shiny gold";
 
+// find container bag and its children
 static RE_SOURCE: Lazy<Regex> = Lazy::new(||
     Regex::new(r"^(?P<source>\w+ \w+) bags?? contain (?P<children>[^.]+)*\.$").unwrap());
+// find each child color
 static RE_CHILDREN: Lazy<Regex> = Lazy::new(||
     Regex::new(r"(?P<count>\d+) (?P<child>\w+ \w+) bags??").unwrap());
 
@@ -47,6 +53,7 @@ fn create_maps(input: &Vec<String>) -> (ContainsMap, ContainedMap) {
     let mut contained: ContainedMap = ContainedMap::new();
 
     for line in input {
+        // we can skip empty container bags (REs are expensive enough already)
         if line.ends_with("no other bags.") { continue; }
 
         if let Some(caps) = RE_SOURCE.captures(line) {
@@ -88,6 +95,13 @@ fn walk_contained(map: &ContainedMap, color: &str, out: &mut ContainsSet) {
     }
 }
 
+/*
+    So, a single shiny gold bag must contain
+         1 dark olive bag (and the 7 bags within it)
+    plus 2 vibrant plum bags (and the 11 bags within each of those):
+    1 + 1*7 + 2 + 2*11 = 32 bags!
+    (1 * (7 + 1)) + (2 * (11 + 1))
+*/
 fn color_cost(map: &ContainsMap, color: &str) -> usize {
     let mut total = 0usize;
     if let Some(children) = map.get(color) {
