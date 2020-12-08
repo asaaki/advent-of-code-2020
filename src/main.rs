@@ -47,5 +47,6 @@ fn run_day(day: Day, step: Step, data: Vec<String>, expected: Option<String>) ->
         Day::Five => day_branch!(day5, step, data, expected),
         Day::Six => day_branch!(day6, step, data, expected),
         Day::Seven => day_branch!(day7, step, data, expected),
+        Day::Eight => day_branch!(day8, step, data, expected),
     }
 }
