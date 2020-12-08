@@ -118,10 +118,7 @@ pub(crate) fn run(step: Step, input: &Vec<String>) -> CustomResult<String> {
 
             while running {
                 running = program.tick();
-                if !running {
-                    if program.terminated {
-                        break;
-                    }
+                if !running && !program.terminated {
                     let mut new_code = original_code.clone();
                     new_code[last_swap_idx] = Instruction::swap(new_code[last_swap_idx]);
                     program = Program::new(new_code);
