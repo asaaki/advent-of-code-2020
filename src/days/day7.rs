@@ -78,6 +78,7 @@ fn create_maps(input: &Vec<String>) -> (ContainsMap, ContainedMap) {
                             .as_str() // turn match into string slice
                             .parse() // try to make it an int
                             .expect("count to be a number"); // unwrap or fail
+
                         // shorter parsing as no type conversion is needed:
                         let child = c.name("child").expect("child match missing").as_str();
 

@@ -28,8 +28,8 @@ impl Instruction {
 
     fn swap(self) -> Self {
         match self {
-            Nop(v) => {eprintln!("swapped nop->jmp v={}", &v);Jmp(v)},
-            Jmp(v) => {eprintln!("swapped jmp->nop v={}", &v);Nop(v)},
+            Nop(v) => Jmp(v),
+            Jmp(v) => Nop(v),
             _ => self,
         }
     }
@@ -41,21 +41,29 @@ type Code = Vec<Instruction>;
 struct Program {
     code: Code,
 
-    pc: usize, // PC: program counter
-    counter: isize, // accumulator value
+    pc: usize,         // PC: program counter
+    counter: isize,    // accumulator value
     visits: Vec<bool>, // for loop detection
-    terminated: bool, // if program terminated successfully
+    terminated: bool,  // if program terminated successfully
 }
 
 impl Program {
     fn new(code: Code) -> Self {
         let visits = vec![false; code.len()];
-        Program { code, visits, counter: 0, pc: 0, terminated: false }
+        Program {
+            code,
+            visits,
+            counter: 0,
+            pc: 0,
+            terminated: false,
+        }
     }
 
     fn tick(&mut self) -> bool {
         let pc = self.pc;
-        if self.visits[pc] { return false };
+        if self.visits[pc] {
+            return false;
+        };
         self.visits[pc] = true;
 
         match self.code[pc] {
@@ -76,25 +84,26 @@ impl Program {
         // terminate if current PC was the last one in program
         if pc + 1 == self.code.len() {
             self.terminated = true;
-            return false
+            return false;
         };
 
         true
     }
 }
 
-
-
 pub(crate) fn run(step: Step, input: &Vec<String>) -> CustomResult<String> {
-    let asm: Code = input.iter().map(|l| {
-        let tuple: Vec<&str> = l.split(" ").collect();
-        Instruction::from_tuple(&tuple)
-    }).collect();
+    let asm: Code = input
+        .iter()
+        .map(|l| {
+            let tuple: Vec<&str> = l.split(" ").collect();
+            Instruction::from_tuple(&tuple)
+        })
+        .collect();
     let mut program = Program::new(asm);
 
     match step {
         Step::One => {
-            while program.tick() { /* no body needed */ };
+            while program.tick() { /* no body needed */ }
             let result: String = format!("{}", program.counter);
             println!("Result = {}", result);
             Ok(result)
@@ -110,7 +119,9 @@ pub(crate) fn run(step: Step, input: &Vec<String>) -> CustomResult<String> {
             while running {
                 running = program.tick();
                 if !running {
-                    if program.terminated { break; }
+                    if program.terminated {
+                        break;
+                    }
                     let mut new_code = original_code.clone();
                     new_code[last_swap_idx] = Instruction::swap(new_code[last_swap_idx]);
                     program = Program::new(new_code);
