@@ -16,13 +16,15 @@ enum Instruction {
 use Instruction::*;
 
 impl Instruction {
-    fn from_tuple(tuple: &Vec<&str>) -> Self {
-        let arg: isize = tuple[1].parse().expect("argument must be number");
-        match tuple[0] {
+    fn new(op: &str, arg: isize) -> Self {
+        match op {
             "nop" => Nop(arg),
             "acc" => Acc(arg),
             "jmp" => Jmp(arg),
-            _ => panic!("invalid instruction found in code; input: {:?}", tuple),
+            _ => panic!(
+                "invalid instruction found in code; input: op={}, arg={}",
+                op, arg
+            ),
         }
     }
 
@@ -92,14 +94,15 @@ impl Program {
 }
 
 pub(crate) fn run(step: Step, input: &Vec<String>) -> CustomResult<String> {
-    let asm: Code = input
+    let code: Code = input
         .iter()
         .map(|l| {
-            let tuple: Vec<&str> = l.split(" ").collect();
-            Instruction::from_tuple(&tuple)
+            let (op, raw_arg) = l.split_at(3);
+            let arg = raw_arg[1..].parse().expect("arg to be a number");
+            Instruction::new(op, arg)
         })
         .collect();
-    let mut program = Program::new(asm);
+    let mut program = Program::new(code.clone());
 
     match step {
         Step::One => {
@@ -110,26 +113,25 @@ pub(crate) fn run(step: Step, input: &Vec<String>) -> CustomResult<String> {
         }
 
         Step::Two => {
-            // keep a clean copy around
-            let original_code = program.code.clone();
-
             let mut running = true;
             let mut last_swap_idx = 0usize;
 
             while running {
                 running = program.tick();
                 if !running && !program.terminated {
-                    let mut new_code = original_code.clone();
+                    let mut new_code = code.clone();
                     new_code[last_swap_idx] = Instruction::swap(new_code[last_swap_idx]);
                     program = Program::new(new_code);
+                    running = true;
                     last_swap_idx += 1;
+
                     // just a better message than index out of bound error
                     if last_swap_idx == program.code.len() {
                         panic!("all mutations tried, no success, abort!");
                     }
-                    running = true;
                 }
             }
+
             let result: String = format!("{}", program.counter);
             println!("Result = {}", result);
             Ok(result)
