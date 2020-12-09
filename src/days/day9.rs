@@ -53,7 +53,7 @@ pub(crate) fn run(step: Step, input: &Vec<String>) -> CustomResult<String> {
         }
 
         Step::Two => {
-            // pseudo efficancy: use a shorter slice for search;
+            // pseudo efficiency: use a shorter slice for search;
             // it also works without this sub slicing
             let iidx = cipher.iter().position(|&e| e == invalid).unwrap();
             let cipher = &cipher[..iidx];
