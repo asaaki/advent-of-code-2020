@@ -1,5 +1,6 @@
+MODE   ?= --release
 RUN     = cargo run
-RUN_FOR = $(RUN) --
+RUN_FOR = $(RUN) $(MODE) --
 QUIET   = 2>/dev/null
 piece   = $(word $2,$(subst ., ,$1))
 TASKS   = 1.1 1.2 \
@@ -15,7 +16,10 @@ TASKS   = 1.1 1.2 \
 					11.1 11.2 \
 					12.1 12.2
 
-default: $(TASKS)
+default: build $(TASKS)
+
+build:
+	cargo build $(MODE)
 
 $(TASKS): %:
 	@echo @@ Run day $(call piece,$@,1) / step $(call piece,$@,2)
@@ -25,7 +29,7 @@ $(TASKS): %:
 	@echo
 	@echo -- Challenge
 	@echo $(RUN_FOR) $(call piece,$@,1) $(call piece,$@,2)      $(QUIET)
-	@$(RUN_FOR) $(call piece,$@,1) $(call piece,$@,2)      $(QUIET)
+	@time $(RUN_FOR) $(call piece,$@,1) $(call piece,$@,2)      $(QUIET)
 	@echo
 
 create-inputs:
