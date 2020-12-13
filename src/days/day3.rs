@@ -20,8 +20,8 @@ const MAX_R_STEP: usize = 7;
 pub(crate) fn run(step: Step, input: &Vec<String>) -> CustomResult<String> {
     let height = input.len();
     let chunk_size = input[0].len();
-    let lines_covered = chunk_size.div_euclid(MAX_R_STEP);
-    let repeats_needed = height.div_euclid(lines_covered);
+    let lines_covered = chunk_size / MAX_R_STEP;
+    let repeats_needed = height / lines_covered;
     let width = chunk_size * repeats_needed;
     // println!("H={} CHUNK={} W={}", height, chunk_size, width);
 

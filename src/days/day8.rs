@@ -78,7 +78,7 @@ impl Program {
             }
             Jmp(steps) => {
                 let max = self.code.len() as isize;
-                let pos = (pc as isize + steps).rem_euclid(max);
+                let pos = (pc as isize + steps) % max;
                 self.pc = pos as usize;
             }
         }

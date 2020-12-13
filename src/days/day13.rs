@@ -14,7 +14,7 @@ pub(crate) fn run(step: Step, input: &Vec<String>) -> CustomResult<String> {
     match step {
         Step::One => {
             // "x" are filtered out
-            let busses: Vec<usize> = input[1]
+            let busses: Vec<_> = input[1]
                 .split(",")
                 // next 2 are basically: .filter_map(|s| s.parse().ok()),
                 // but injecting the functions instead of building a closure
@@ -57,18 +57,26 @@ pub(crate) fn run(step: Step, input: &Vec<String>) -> CustomResult<String> {
                     // options are .map'able
                     id.map(|id| (offset, id)))
                 // heavy lifting
-                // start with earliest time, puzzle hints that; so no reason to start at 0
-                // use stepping of 1 to kickstart (find a ts for first bus)
+                // start with earliest time, puzzle hints that; so no reason to
+                // start at 0; use stepping of 1 to kickstart finding a ts for
+                // first bus
                 .fold((earliest, 1), |(mut result, step), (offset, id)| {
-                    // open/infinite range
+                    // open/"infinite" range; the worst what could happen:
+                    // reaching the maximum of the integer type used;
+                    // the new result is the first ts matching the criteria;
+                    // when we reach the last bus in the list, it will be also
+                    // the final answer
                     result = (result..)
                         // step through ts with last given stepping
                         .step_by(step)
                         // find a time working with the offset
                         .find(|t| (t + offset) % id == 0)
                         // okay, Rust will panic first when it reaches
-                        // {int type}::MAX, there would no possible solution to
-                        // the .find(…) as well, but unwrapping would not happen
+                        // {int type}::MAX, there wouldn't be a possible
+                        // solution to the .find(…) as well,
+                        // but unwrapping would not happen before the panic;
+                        // this is a lot of text to explain, why an .unwrap()
+                        // would be totally fine here :shrug:
                         .expect("this message cannot happen, we are INFINITY");
 
                     // return result and new stepping for next bus
@@ -90,6 +98,8 @@ pub(crate) fn run(step: Step, input: &Vec<String>) -> CustomResult<String> {
     }
 }
 
+// tiny helper to get both the quotient and remainder;
+// why is that not part of the stdlib? It's sooooo useful!
 fn divmod(a: &usize, b: &usize) -> (usize, usize) {
     (a / b, a % b)
 }

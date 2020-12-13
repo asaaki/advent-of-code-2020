@@ -82,7 +82,7 @@ fn parse_action(s: &str) -> Action {
 }
 
 fn turn(face: &isize, degree: &isize) -> isize {
-    (face + degree).rem_euclid(360)
+    (face + degree) % 360
 }
 
 fn move_ship(x: isize, y: isize, amount: &isize, face: &isize) -> (isize, isize) {
