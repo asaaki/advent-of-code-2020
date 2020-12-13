@@ -30,6 +30,7 @@ pub(crate) fn run(step: Step, input: &Vec<String>) -> CustomResult<String> {
         }
 
         Step::Two => {
+            let now = std::time::Instant::now();
             let len = joltages.len();
             let mut g = vec![vec![0usize; len]; len];
 
@@ -48,6 +49,8 @@ pub(crate) fn run(step: Step, input: &Vec<String>) -> CustomResult<String> {
                 .map(|edges| count_options(&g, 0, len - 1, edges, len))
                 .reduce(|| 0usize, |total, part| total + part);
 
+            let elapsed = now.elapsed();
+            println!("[run] step took: {}ms ({}us)", elapsed.as_millis(), elapsed.as_micros());
             let result: String = format!("{}", count);
             println!("Result = {}", result);
             Ok(result)
