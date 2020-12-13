@@ -22,6 +22,7 @@ dependencies = [
 name = "aoc2020"
 version = "0.1.0"
 dependencies = [
+ "blank",
  "num_enum",
  "once_cell",
  "rayon",
@@ -53,6 +54,12 @@ name = "bitflags"
 version = "1.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "cf1de2fe8c75bc145a2f577add951f8134889b4795d47466a54a5c846d691693"
+
+[[package]]
+name = "blank"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "21936ab915b558cc0df756b238b5941e1c7bf65d8dac6b28f7b95138c60dc97f"
 
 [[package]]
 name = "cfg-if"

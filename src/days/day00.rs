@@ -12,11 +12,23 @@ pub(crate) fn run(step: Step, input: &Vec<String>) -> CustomResult<String> {
     eprintln!("input={:?}", input);
     match step {
         Step::One => {
+            let now = std::time::Instant::now();
+
+            // biz logic here
+
+            let elapsed = now.elapsed();
+            println!("[run] step took: {}ms ({}us)", elapsed.as_millis(), elapsed.as_micros());
             let result: String = format!("{}", 0);
             println!("Result = {}", result);
             Ok(result)
         },
         Step::Two => {
+            let now = std::time::Instant::now();
+
+            // biz logic here
+
+            let elapsed = now.elapsed();
+            println!("[run] step took: {}ms ({}us)", elapsed.as_millis(), elapsed.as_micros());
             let result: String = format!("{}", 0);
             println!("Result = {}", result);
             Ok(result)

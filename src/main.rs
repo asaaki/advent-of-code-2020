@@ -39,7 +39,8 @@ fn main() -> NullResult {
 }
 
 fn run_day(day: Day, step: Step, data: Vec<String>, expected: Option<String>) -> NullResult {
-    match day {
+    let now = std::time::Instant::now();
+    let res = match day {
         Day::One => day_branch!(day1, step, data, expected),
         Day::Two => day_branch!(day2, step, data, expected),
         Day::Three => day_branch!(day3, step, data, expected),
@@ -53,5 +54,8 @@ fn run_day(day: Day, step: Step, data: Vec<String>, expected: Option<String>) ->
         Day::Eleven => day_branch!(day11, step, data, expected),
         Day::Twelve => day_branch!(day12, step, data, expected),
         Day::Thirteen => day_branch!(day13, step, data, expected),
-    }
+    };
+    let elapsed = now.elapsed();
+    println!("run_day took: {}ms ({}us)", elapsed.as_millis(), elapsed.as_micros());
+    res
 }

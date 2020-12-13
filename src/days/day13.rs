@@ -41,6 +41,7 @@ pub(crate) fn run(step: Step, input: &Vec<String>) -> CustomResult<String> {
             Ok(result)
         }
         Step::Two => {
+            let now = std::time::Instant::now();
             // this is a condensed version of multiple steps of parsing and
             // iterating
             let ts = input[1]
@@ -91,6 +92,8 @@ pub(crate) fn run(step: Step, input: &Vec<String>) -> CustomResult<String> {
                 })
                 .0;
 
+            let elapsed = now.elapsed();
+            println!("[run] step took: {}ms ({}us)", elapsed.as_millis(), elapsed.as_micros());
             let result: String = format!("{}", ts);
             println!("Result = {}", result);
             Ok(result)
