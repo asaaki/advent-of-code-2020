@@ -25,7 +25,7 @@ pub(crate) fn run(step: Step, input: &Vec<String>) -> CustomResult<String> {
             let mut next_departures: Vec<(usize, usize)> = busses
                 .iter()
                 .map(|bus| {
-                    let (mut round, rest) = divmod(&earliest, bus);
+                    let (mut round, rest) = unstd::math::usize::divrem(&earliest, bus);
                     if rest > 0 {
                         round += 1
                     };
@@ -99,10 +99,4 @@ pub(crate) fn run(step: Step, input: &Vec<String>) -> CustomResult<String> {
             Ok(result)
         }
     }
-}
-
-// tiny helper to get both the quotient and remainder;
-// why is that not part of the stdlib? It's sooooo useful!
-fn divmod(a: &usize, b: &usize) -> (usize, usize) {
-    (a / b, a % b)
 }

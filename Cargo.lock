@@ -30,6 +30,7 @@ dependencies = [
  "serde",
  "serde_yaml",
  "structopt",
+ "unstd",
 ]
 
 [[package]]
@@ -463,6 +464,12 @@ name = "unicode-xid"
 version = "0.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f7fe0bb3479651439c9112f72b6c505038574c9fbb575ed1bf3b797fa39dd564"
+
+[[package]]
+name = "unstd"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "1b56d77d685f487de1fe48026df410c0939c7680298432965ed8806ec8ba47cf"
 
 [[package]]
 name = "vec_map"
