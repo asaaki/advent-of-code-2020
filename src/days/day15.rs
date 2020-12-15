@@ -55,6 +55,7 @@ pub(crate) fn run(step: Step, input: &Vec<String>) -> CustomResult<String> {
 
 // this is extremely slow for high number of turns;
 // what would be the better option to solve it then?
+// Today's problem was https://oeis.org/A181391 — Thank you, Tony!
 fn run_turns(numbers: Vec<usize>, final_turn: usize) -> usize {
     let mut ages = HashMap::<usize, usize>::new();
     for (turn0, num) in numbers.iter().enumerate() {
