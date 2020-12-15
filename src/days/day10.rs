@@ -52,7 +52,11 @@ pub(crate) fn run(step: Step, input: &Vec<String>) -> CustomResult<String> {
             let elapsed = now.elapsed();
             let result: String = format!("{}", count);
             println!("Result = {}", result);
-            println!("[run] step took: {}ms ({}us)", elapsed.as_millis(), elapsed.as_micros());
+            println!(
+                "[run] step took: {}ms ({}us)",
+                elapsed.as_millis(),
+                elapsed.as_micros()
+            );
             Ok(result)
         }
     }

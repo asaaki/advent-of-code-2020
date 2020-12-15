@@ -38,7 +38,11 @@ fn main() -> NullResult {
 
     let res = run_day(day, step, data, expected);
     let elapsed = now.elapsed();
-    println!("[main] took: {}ms ({}us)", elapsed.as_millis(), elapsed.as_micros());
+    println!(
+        "[main] took: {}ms ({}us)",
+        elapsed.as_millis(),
+        elapsed.as_micros()
+    );
     res
 }
 
@@ -61,6 +65,10 @@ fn run_day(day: Day, step: Step, data: Vec<String>, expected: Option<String>) ->
         Day::Fourteen => day_branch!(day14, step, data, expected),
     };
     let elapsed = now.elapsed();
-    println!("[run_day] took: {}ms ({}us)", elapsed.as_millis(), elapsed.as_micros());
+    println!(
+        "[run_day] took: {}ms ({}us)",
+        elapsed.as_millis(),
+        elapsed.as_micros()
+    );
     res
 }
