@@ -3,36 +3,39 @@ RUN     = cargo run
 RUN_FOR = $(RUN) $(MODE) --
 QUIET   = 2>/dev/null
 piece   = $(word $2,$(subst ., ,$1))
-TASKS   = 1.1 1.2 \
-					2.1 2.2 \
-					3.1 3.2 \
-					4.1 4.2 \
-					5.1 5.2 \
-					6.1 6.2 \
-					7.1 7.2 \
-					8.1 8.2 \
-					9.1 9.2 \
-					10.1 10.2 \
-					11.1 11.2 \
-					12.1 12.2 \
-					13.1 13.2
+TASKS   = $(shell ls src/days/day*.rs | sed -e 's/[^0-9]//g' | sort -h | xargs -i echo {}.1 {}.2)
 
-default: build $(TASKS)
+# neat trick if you want all recipes invoke a single shell for the whole body!
+# https://www.gnu.org/software/make/manual/html_node/One-Shell.html
+# WARNING! This cannot be done for individual recipes. :-(
+# .ONESHELL:
+# .SHELLFLAGS: -ec
+
+default: fast
+
+fast:
+	@$(MAKE) build-and-tasks -j16 --output-sync=recurse --no-print-directory
+
+build-and-tasks: | build $(TASKS)
 
 build:
 	cargo build $(MODE)
 
 $(TASKS): %:
-	@echo @@ Run day $(call piece,$@,1) / step $(call piece,$@,2)
+	@echo @@ Run day $(call piece,$@,1) / part $(call piece,$@,2)
 	@echo
 	@echo -- Test case
 	@echo $(RUN_FOR) $(call piece,$@,1) $(call piece,$@,2) test $(QUIET)
-	@$(RUN_FOR) $(call piece,$@,1) $(call piece,$@,2) test $(QUIET)
+	@$(RUN_FOR)      $(call piece,$@,1) $(call piece,$@,2) test $(QUIET)
 	@echo
 	@echo -- Challenge
 	@echo $(RUN_FOR) $(call piece,$@,1) $(call piece,$@,2)      $(QUIET)
-	@$(RUN_FOR) $(call piece,$@,1) $(call piece,$@,2)      $(QUIET)
+	@$(RUN_FOR)      $(call piece,$@,1) $(call piece,$@,2)      $(QUIET)
 	@echo
 
-create-inputs:
-	@touch inputs/day_$(DAY)_{1,2}{,_test}.txt
+day:
+	@(echo -n "Day? ";\
+		read DAY;\
+		echo "day is $${DAY}";\
+		cp src/days/template.rs src/days/day$${DAY}.rs;\
+		touch inputs/day_$${DAY}_{1,2}{,_test}.txt)

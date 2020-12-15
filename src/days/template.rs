@@ -14,7 +14,7 @@ pub(crate) fn run(step: Step, input: &Vec<String>) -> CustomResult<String> {
         Step::One => {
             let now = std::time::Instant::now();
 
-            // biz logic here
+            todo!("biz logic here");
 
             let elapsed = now.elapsed();
             let result: String = format!("{}", 0);
@@ -25,7 +25,7 @@ pub(crate) fn run(step: Step, input: &Vec<String>) -> CustomResult<String> {
         Step::Two => {
             let now = std::time::Instant::now();
 
-            // biz logic here
+            todo!("biz logic here");
 
             let elapsed = now.elapsed();
             let result: String = format!("{}", 0);
