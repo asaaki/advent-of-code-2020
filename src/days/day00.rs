@@ -17,9 +17,9 @@ pub(crate) fn run(step: Step, input: &Vec<String>) -> CustomResult<String> {
             // biz logic here
 
             let elapsed = now.elapsed();
-            println!("[run] step took: {}ms ({}us)", elapsed.as_millis(), elapsed.as_micros());
             let result: String = format!("{}", 0);
             println!("Result = {}", result);
+            println!("[run] step took: {}ms ({}us)", elapsed.as_millis(), elapsed.as_micros());
             Ok(result)
         },
         Step::Two => {
@@ -28,9 +28,9 @@ pub(crate) fn run(step: Step, input: &Vec<String>) -> CustomResult<String> {
             // biz logic here
 
             let elapsed = now.elapsed();
-            println!("[run] step took: {}ms ({}us)", elapsed.as_millis(), elapsed.as_micros());
             let result: String = format!("{}", 0);
             println!("Result = {}", result);
+            println!("[run] step took: {}ms ({}us)", elapsed.as_millis(), elapsed.as_micros());
             Ok(result)
         }
     }

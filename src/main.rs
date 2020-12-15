@@ -63,6 +63,7 @@ fn run_day(day: Day, step: Step, data: Vec<String>, expected: Option<String>) ->
         Day::Twelve => day_branch!(day12, step, data, expected),
         Day::Thirteen => day_branch!(day13, step, data, expected),
         Day::Fourteen => day_branch!(day14, step, data, expected),
+        Day::Fifteen => day_branch!(day15, step, data, expected),
     };
     let elapsed = now.elapsed();
     println!(
