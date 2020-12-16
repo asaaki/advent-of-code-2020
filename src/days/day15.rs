@@ -1,6 +1,5 @@
 use crate::structs::*;
 use crate::utils::*;
-use std::collections::HashMap;
 // use rayon::prelude::*;
 
 pub(crate) fn run_test(step: Step, input: &Vec<String>, expected: String) -> NullResult {
@@ -56,10 +55,12 @@ pub(crate) fn run(step: Step, input: &Vec<String>) -> CustomResult<String> {
 // this is extremely slow for high number of turns;
 // what would be the better option to solve it then?
 // Today's problem was https://oeis.org/A181391 — Thank you, Tony!
+// Switched from a HashMap to a pre-filled Vec — Thank you, Josh!
 fn run_turns(numbers: Vec<usize>, final_turn: usize) -> usize {
-    let mut ages = HashMap::<usize, usize>::new();
+    let mut ages = vec![0usize; final_turn];
+
     for (turn0, num) in numbers.iter().enumerate() {
-        ages.insert(*num, turn0 + 1);
+        ages[*num] = turn0 + 1;
     }
 
     ((numbers.len() + 1)..=final_turn)
@@ -69,8 +70,8 @@ fn run_turns(numbers: Vec<usize>, final_turn: usize) -> usize {
             } else {
                 (turn - 1) - last_turn
             };
-            last_turn = *(ages.get(&to_speak).unwrap_or(&0));
-            ages.insert(to_speak, turn);
+            last_turn = ages[to_speak];
+            ages[to_speak] = turn;
             (last_turn, to_speak)
         })
         .1 // second item is our final spoken number
