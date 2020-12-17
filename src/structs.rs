@@ -27,6 +27,7 @@ pub(crate) enum Day {
     Thirteen,
     Fourteen,
     Fifteen,
+    Sixteen,
 }
 
 #[derive(Debug, Eq, PartialEq, TryFromPrimitive)]
