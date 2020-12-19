@@ -2,14 +2,30 @@ MODE   ?= --release
 RUN     = cargo run
 RUN_FOR = $(RUN) $(MODE) --
 QUIET   = 2>/dev/null
-piece   = $(word $2,$(subst ., ,$1))
-TASKS   = $(shell ls src/days/day*.rs | sed -e 's/[^0-9]//g' | sort -h | xargs -i echo {}.1 {}.2)
+
+UNAME_S = $(shell uname -s)
+ifeq ($(UNAME_S),Darwin)
+# brew install findutils
+XARGS = gxargs
+# brew install make
+MAKE = gmake
+else
+XARGS = xargs
+endif
+
+TASKS = $(shell ls src/days/day*.rs | sed -e 's/[^0-9]//g' | sort -h | $(XARGS) -i echo {}.1 {}.2)
+
+# tiny helper to separate XX.YY tuples again ^_^'
+piece = $(word $2,$(subst ., ,$1))
+
 
 # neat trick if you want all recipes invoke a single shell for the whole body!
 # https://www.gnu.org/software/make/manual/html_node/One-Shell.html
 # WARNING! This cannot be done for individual recipes. :-(
 # .ONESHELL:
 # .SHELLFLAGS: -ec
+
+SHELL ?= bash
 
 default: fast
 
